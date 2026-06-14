@@ -1,0 +1,62 @@
+// Arduino soil moisture sensor code
+
+// declare variables for pins
+const int sensorpin = A0;
+const int sensorpower = 2;
+const int LED1 = 2;
+const int LED2 = 3;
+const int pumppin = 11;
+
+// variable for sensor reading
+int sensor;
+
+// delay time between sensor readings (milliseconds)
+const int delayTime = 1; 
+
+// "wet" and "dry" thresholds - these require calibration
+int thresh = 600;
+
+void setup(){ // code that only runs once
+  // set pins as outputs
+  pinMode(LED1,OUTPUT);
+  pinMode(LED2,OUTPUT);
+  pinMode(sensorpower,OUTPUT);
+  pinMode(pumppin,OUTPUT);
+  
+  // initialize serial communication
+  Serial.begin(9600);
+}
+
+void loop(){ // code that loops forever
+  // power on sensor and wait briefly
+  digitalWrite(sensorpower,HIGH);
+  delay(10);
+  // take reading from sensor
+  sensor = analogRead(sensorpin);
+  // turn sensor off to help prevent corrosion
+  digitalWrite(sensorpower,LOW);
+  
+  // print sensor reading
+  Serial.println(sensor);
+  
+  // If sensor reading is greater than "wet" threshold,
+  // turn on the green LED. If it is less than the "dry"
+  // threshold, turn on the red LED and the pump. 
+  // 
+  if(sensor>thresh){
+    digitalWrite(LED1,LOW);
+    digitalWrite(LED2,HIGH);
+    digitalWrite(pumppin,LOW);
+  }
+  else{
+    digitalWrite(LED1,HIGH);
+    digitalWrite(LED2,LOW);
+    digitalWrite(pumppin,HIGH);
+  }
+  
+  // wait before taking next reading
+  delay(delayTime);
+}
+  
+ 
+
